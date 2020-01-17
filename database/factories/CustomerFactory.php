@@ -12,7 +12,7 @@ $factory->define(\App\models\Customer::class, function (Faker $faker) {
         'number_phone' => $faker->e164PhoneNumber,
         'avatar' => 'url image',
         'package_ticket_id' => factory(\App\models\PackageTicket::class)->create()->id,
-        'date_buy' => $faker->dateTime,
-        'date_end' => $faker->dateTime,
+        'date_buy' => $faker->date(),
+        'date_end' => $faker->date(),
     ];
 });

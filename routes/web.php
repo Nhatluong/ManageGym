@@ -19,3 +19,4 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::resource('package_tickets', 'PackageTicketController');
+Route::resource('customers', 'CustomerController');

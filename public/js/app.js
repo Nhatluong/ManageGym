@@ -49553,6 +49553,20 @@ var app = new Vue({
 $('input[name=sort_price]').change(function () {
   $(this).closest('form').submit();
 });
+$('input[name=status]').change(function () {
+  var inputDateLeft = $(this).closest('.form-check').find('input[name=date_left]');
+
+  if (inputDateLeft.length) {} else {
+    $('input[name=date_left]').val('');
+    $(this).closest('form').submit();
+  }
+});
+$('input[name=date_left]').click(function () {
+  $(this).closest('.form-check').find('input[name=status]').prop('checked', true);
+});
+$('.fa.fa-edit').click(function () {
+  $('#modal_customer').modal('show');
+});
 
 /***/ }),
 

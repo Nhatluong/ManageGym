@@ -20,8 +20,8 @@ class CreateTableCustomer extends Migration
             $table->string('number_phone', 20);
             $table->string('avatar')->nullable();
             $table->unsignedBigInteger('package_ticket_id');
-            $table->time('date_buy');
-            $table->time('date_end');
+            $table->date('date_buy');
+            $table->date('date_end');
             $table->timestamps();
 
             $table->foreign('package_ticket_id')
