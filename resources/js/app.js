@@ -31,6 +31,12 @@ const app = new Vue({
     el: '#app',
 });
 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 $('input[name=sort_price]').change(function () {
     $(this).closest('form').submit()
 });
@@ -50,4 +56,18 @@ $('input[name=date_left]').click(function () {
 
 $('.fa.fa-edit').click(function () {
     $('#modal_customer').modal('show')
+});
+
+$('input[name=avatar]').change(function () {
+    console.log('VAO')
+    let fileImg = $(this)[0].files[0];
+    var reader = new FileReader();
+    console.log(fileImg)
+    reader.onload = function (e) {
+        $('#image_avatar').attr('src', e.target.result)
+    }
+    reader.readAsDataURL(fileImg);
+})
+$('.btn-success').click(function (e) {
+    // e.preventDefault();
 })

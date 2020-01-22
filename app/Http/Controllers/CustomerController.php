@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaveCustomerRequest;
 use App\models\Customer;
+use App\models\Dtos\CustomerDTO;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
     private $customer;
+    private $customerDTO;
 
-    public function __construct(Customer $customer)
+    public function __construct(Customer $customer, CustomerDTO $customerDTO)
     {
         $this->customer = $customer;
+        $this->customerDTO = $customerDTO;
     }
 
     /**
@@ -44,11 +48,15 @@ class CustomerController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Request $request)
+    public function store(SaveCustomerRequest $request)
     {
-        //
+        if($this->customer->saveCustomer($request, $this->customerDTO, $this->customer)) {
+            return redirect(route('customers.index'));
+        }
+        return redirect()->back()
+            ->withInput($request->all());
     }
 
     /**

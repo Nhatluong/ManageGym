@@ -2,8 +2,12 @@
 
 namespace App\models;
 
+use App\models\Dtos\CustomerDTO;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class Customer extends Model
 {
@@ -44,5 +48,43 @@ class Customer extends Model
         $query = $this->newQuery()->getByStatus($status)->search($keyword)->getByDateLeft($dateLeft)->with('packageTicket');
 
        return $query->paginate(15);
+    }
+
+    public function saveCustomer(Request $request, CustomerDTO $customerDTO, Customer $customer)
+    {
+        $data = $customerDTO->getFormRequest($request);
+        $attribute = [
+            'name' => $data['name'],
+            'number_phone' => $data['number_phone'],
+            'address' => $data['address'],
+            'package_ticket_id' => $data['package_ticket_id'],
+            'status' => $data['status'],
+            'date_buy' => $data['date_buy'],
+            'date_end' => $data['date_end']
+        ];
+        $customer->forceFill($attribute);
+        try {
+            $this->saveImage($customer, $data);
+
+        } catch (\Exception $exception) {
+            logger($exception->getMessage());
+        }
+        $customer->save();
+        $customer->refresh();
+        return $customer;
+    }
+
+    public function saveImage(Customer &$customer, $data)
+    {
+        $disk = Storage::disk('customer');
+        if ($customer->avatar && !$data['old_data']) {
+            $disk->delete($customer->avatar);
+            $customer->setAttribute('avatar', '');
+        }
+        if($data['avatar']) {
+            $fileName = md5(microtime(true).uniqid()).'.jpg';
+            $disk->put($fileName, Image::make($data['avatar'])->encode('jpg', 75));
+            $customer->setAttribute('avatar', $fileName);
+        }
     }
 }
